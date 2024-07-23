@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use App\Models\Event;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('attendees', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\User::class);
-            $table->foreignIdFor(\App\Models\Event::class);
+            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(Event::class);
             $table->timestamps();
         });
     }
