@@ -6,15 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Attendee;
 use App\Http\Resources\AttendeeResource;
+use App\Http\Traits\CanLoadRelationships;
 use Illuminate\Http\Request;
 
 class AttendeeController extends Controller
 {
+    use CanLoadRelationships;
+
+    private array $relations = ['user'];
+
     public function index(Event $event)
     {
-        $attendees = $event->attendees()->latest();
-
-        return AttendeeResource::collection($attendees->paginate());
+        return AttendeeResource::collection($this->loadRelationships(Event::query())->latest()->paginate());
     }
 
     public function store(Request $request, Event $event)
@@ -23,17 +26,12 @@ class AttendeeController extends Controller
             'user_id' => 1
         ]);
 
-        return new AttendeeResource($attendee);
+        return new AttendeeResource($this->loadRelationships($attendee));
     }
 
     public function show(Event $event, Attendee $attendee)
     {
-        return new AttendeeResource($attendee);
-    }
-
-    public function update(Request $request, string $id)
-    {
-        //
+        return new AttendeeResource($this->loadRelationships($attendee));
     }
 
     public function destroy(string $event, Attendee $attendee) // NO NEED TO FETCH THE EVENT FROM DB
